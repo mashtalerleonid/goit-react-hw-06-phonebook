@@ -1,74 +1,121 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from "react";
 import { Form, Label } from "./ContactForm.styled";
 
-export default function ContactForm({ addContact }) {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
+import { connect } from "react-redux";
 
-  const handleChange = (e) => {
+class ContactForm extends Component {
+  state = { name: "", number: "" };
+
+  handleChange = (e) => {
     const { name, value } = e.target;
-    switch (name) {
-      case "name":
-        setName(value);
-        break;
-
-      case "number":
-        setNumber(value);
-        break;
-
-      default:
-        return;
-    }
+    this.setState({ [name]: value });
   };
 
-  const reset = () => {
-    setName("");
-    setNumber("");
-  };
-
-  const handleSubmit = (e) => {
+  handleSubmit = (e) => {
     e.preventDefault();
 
-    addContact(name, number);
-    reset();
+    this.props.onAddContact(this.state);
+    this.reset();
   };
 
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Label>
-        Name
-        <input
-          value={name}
-          onChange={handleChange}
-          autoComplete="off"
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-          required
-        />
-      </Label>
+  reset = () => {
+    this.setState({ name: "", number: "" });
+  };
 
-      <Label>
-        Number
-        <input
-          value={number}
-          onChange={handleChange}
-          autoComplete="off"
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-          required
-        />
-      </Label>
+  render() {
+    return (
+      <Form onSubmit={this.handleSubmit}>
+        <Label>
+          Name
+          <input
+            value={this.state.name}
+            onChange={this.handleChange}
+            autoComplete="off"
+            type="text"
+            name="name"
+            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+            required
+          />
+        </Label>
 
-      <button type="submit">Add contact</button>
-    </Form>
-  );
+        <Label>
+          Number
+          <input
+            value={this.state.number}
+            onChange={this.handleChange}
+            autoComplete="off"
+            type="tel"
+            name="number"
+            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+            required
+          />
+        </Label>
+
+        <button type="submit">Add contact</button>
+      </Form>
+    );
+  }
 }
 
-ContactForm.propTypes = {
-  addContact: PropTypes.func,
-};
+export default ContactForm;
+
+// ContactForm.propTypes = {
+//   addContact: PropTypes.func,
+// };
+
+// import { handleNameChange, handleNumberChange } from "../../redux/actions";
+
+// function ContactForm({ name, number, onNameChange, onNumberChange }) {
+//   return (
+//     <Form>
+//       {/* <Form onSubmit={this.handleSubmit}> */}
+//       <Label>
+//         {name}
+//         <input
+//           // value={name}
+//           onChange={onNameChange}
+//           autoComplete="off"
+//           type="text"
+//           name="name"
+//           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+//           title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+//           required
+//         />
+//       </Label>
+
+//       <Label>
+//         {number}
+//         <input
+//           // value={number}
+//           onChange={onNumberChange}
+//           autoComplete="off"
+//           type="tel"
+//           name="number"
+//           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+//           title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+//           required
+//         />
+//       </Label>
+
+//       {/* <button type="submit">Add contact</button> */}
+//     </Form>
+//   );
+// }
+
+// const mapStateToProps = (state) => {
+//   return {
+//     name: state.data.name,
+//     number: state.data.number,
+//   };
+// };
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     onNameChange: (e) => dispatch(handleNameChange(e)),
+//     onNumberChange: (e) => dispatch(handleNumberChange(e)),
+//   };
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);

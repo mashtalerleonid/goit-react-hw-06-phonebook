@@ -1,68 +1,52 @@
-import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
+import React, { Component } from "react";
 import ContactForm from "components/ContactForm";
 import Filter from "components/Filter";
 import ContactList from "components/Contacts/ContactList";
 import { Container } from "./App.styled";
-import useLocalStorage from "./hooks/useLocalStorage";
 
-export default function App() {
-  const [contacts, setContacts] = useLocalStorage("contacts", []);
-  const [filter, setFilter] = useState("");
+import store from "./redux/store";
 
-  const addContact = (name, number) => {
-    const contact = { id: uuidv4(), name, number };
+import * as actions from "./redux/phonebook/phonebook-actions";
+import { connect } from "react-redux";
 
-    let isAdded = false;
+//   componentDidMount() {
+//     const parsedContacts = JSON.parse(localStorage.getItem("contacts"));
+//     if (parsedContacts) {
+//       this.setState({ contacts: parsedContacts });
+//     }
+//   }
+//   componentDidUpdate(prevProps, prevState) {
+//     if (this.state.contacts !== prevState.contacts) {
+//       localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+//     }
+//   }
 
-    contacts.forEach((contact) => {
-      if (contact.name === name) {
-        isAdded = true;
-        return;
-      }
-    });
-
-    if (isAdded) {
-      alert(`${name} is already in contacts`);
-    } else {
-      setContacts((prev) => [...prev, contact]);
-    }
-  };
-
-  const deleteContact = (contactId) => {
-    setContacts((prev) => prev.filter((contact) => contact.id !== contactId));
-  };
-
-  const filterChange = (e) => {
-    const { value } = e.target;
-    setFilter(value);
-  };
-
-  const filterBlur = (e) => {
-    setFilter("");
-  };
-
-  const getFilteredContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
-
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizedFilter)
-    );
-  };
-
-  const filteredContacts = getFilteredContacts();
-
+function App({ onAddContact }) {
   return (
     <Container>
       <h1>Phonebook</h1>
-      <ContactForm addContact={addContact} />
+      <ContactForm onAddContact={onAddContact} />
+
       <h2>Contacts</h2>
-      <Filter
-        filterBlur={filterBlur}
-        filterChange={filterChange}
-        filter={filter}
-      />
-      <ContactList list={filteredContacts} onDeleteContact={deleteContact} />
+      <Filter />
+
+      <ContactList />
     </Container>
   );
 }
+
+// const mapStateToProps = (state) => {
+//   return {
+//     items: state.contacts.items,
+//     filter: state.contacts.filter,
+//   };
+// };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAddContact: (contact) => dispatch(actions.addContact(contact)),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);
+// export default App;
