@@ -1,58 +1,77 @@
-import { v4 as uuidv4 } from "uuid";
 import { combineReducers } from "redux";
-import actionTypes from "./phonebook-types";
+import { createReducer } from "@reduxjs/toolkit";
+import * as actions from "../phonebook/phonebook-actions";
 
-const initialItems = [
-  { id: "4545", name: "Leon", number: "158 44 77" },
-  { id: "7878", name: "Tom", number: "265 44 77" },
-];
+const itemsReducer = createReducer([], {
+  [actions.addContact]: (state, action) => {
+    let isAdded = false;
 
-const filterReducer = (state = "", { type, payload }) => {
-  switch (type) {
-    case actionTypes.FILTER_CHANGE:
-      return payload;
-
-    case actionTypes.FILTER_BLUR:
-      return payload;
-
-    default:
-      return state;
-  }
-};
-
-const itemsReducer = (state = initialItems, { type, payload }) => {
-  switch (type) {
-    case actionTypes.ADD_CONTACT:
-      const newContact = {
-        id: uuidv4(),
-        name: payload.name,
-        number: payload.number,
-      };
-      let isAdded = false;
-
-      state.forEach((item) => {
-        if (item.name === newContact.name) {
-          isAdded = true;
-          return;
-        }
-      });
-
-      if (isAdded) {
-        alert(`${payload.name} is already in contacts`);
-        return state;
+    state.forEach((item) => {
+      if (item.name === action.payload.name) {
+        isAdded = true;
+        return;
       }
+    });
 
-      return [...state, newContact];
-
-    case actionTypes.DELETE_CONTACT:
-      return state.filter((item) => item.id !== payload);
-
-    default:
+    if (isAdded) {
+      alert(`${action.payload.name} is already in contacts`);
       return state;
-  }
-};
+    }
+
+    return [...state, action.payload];
+  },
+  [actions.deleteContact]: (state, action) =>
+    state.filter((item) => item.id !== action.payload),
+});
+
+const filterReducer = createReducer("", {
+  [actions.filterChange]: (_, action) => action.payload,
+  [actions.filterBlur]: (_, action) => action.payload,
+});
 
 export default combineReducers({
   items: itemsReducer,
   filter: filterReducer,
 });
+
+// ------------------------
+
+// const filterReducer = (state = "", { type, payload }) => {
+//   switch (type) {
+//     case types.FILTER_CHANGE:
+//       return payload;
+
+//     case types.FILTER_BLUR:
+//       return payload;
+
+//     default:
+//       return state;
+//   }
+// };
+
+// const itemsReducer = (state = initialItems, { type, payload }) => {
+//   switch (type) {
+//     case types.ADD_CONTACT:
+//       let isAdded = false;
+
+//       state.forEach((item) => {
+//         if (item.name === payload.name) {
+//           isAdded = true;
+//           return;
+//         }
+//       });
+
+//       if (isAdded) {
+//         alert(`${payload.name} is already in contacts`);
+//         return state;
+//       }
+
+//       return [...state, payload];
+
+//     case types.DELETE_CONTACT:
+//       return state.filter((item) => item.id !== payload);
+
+//     default:
+//       return state;
+//   }
+// };

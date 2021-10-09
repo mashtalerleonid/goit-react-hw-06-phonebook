@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onFilterChange: (event) =>
       dispatch(actions.filterChange(event.target.value)),
-    onFilterBlur: () => dispatch(actions.filterBlur()),
+    onFilterBlur: () => dispatch(actions.filterBlur("")),
   };
 };
 

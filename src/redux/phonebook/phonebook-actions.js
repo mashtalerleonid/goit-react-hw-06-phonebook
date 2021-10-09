@@ -1,21 +1,37 @@
-import actionTypes from "./phonebook-types";
+import { v4 as uuidv4 } from "uuid";
+import { createAction } from "@reduxjs/toolkit";
 
-export const addContact = (contact) => ({
-  type: actionTypes.ADD_CONTACT,
-  payload: contact,
-});
+export const filterChange = createAction("phonebook/filterChange");
 
-export const deleteContact = (contactId) => ({
-  type: actionTypes.DELETE_CONTACT,
-  payload: contactId,
-});
+export const filterBlur = createAction("phonebook/filterBlur");
 
-export const filterChange = (text) => ({
-  type: actionTypes.FILTER_CHANGE,
-  payload: text,
-});
+export const deleteContact = createAction("phonebook/deleteContact");
 
-export const filterBlur = () => ({
-  type: actionTypes.FILTER_BLUR,
-  payload: "",
-});
+export const addContact = createAction(
+  "phonebook/addContact",
+  ({ name, number }) => ({
+    payload: { id: uuidv4(), name, number },
+  })
+);
+
+// ----------------------
+
+// export const addContact = ({ name, number }) => ({
+//   type: actionTypes.ADD_CONTACT,
+//   payload: { id: uuidv4(), name, number },
+// });
+
+// export const deleteContact = (contactId) => ({
+//   type: actionTypes.DELETE_CONTACT,
+//   payload: contactId,
+// });
+
+// export const filterChange = (text) => ({
+//   type: actionTypes.FILTER_CHANGE,
+//   payload: text,
+// });
+
+// export const filterBlur = (text) => ({
+//   type: actionTypes.FILTER_BLUR,
+//   payload: text,
+// });
