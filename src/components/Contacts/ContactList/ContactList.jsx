@@ -1,45 +1,32 @@
 import ContactListItem from "components/Contacts/ContactListItem/";
 import { List } from "./ContactList.styled";
 
-import { connect } from "react-redux";
-import * as actions from "../../../redux/phonebook/phonebook-actions";
+import { useSelector } from "react-redux";
+import { getFilteredItems } from "../../../redux/phonebook/phonebook-selectors";
 
-function ContactList({ items, onDeleteContact }) {
+export default function ContactList() {
+  const items = useSelector(getFilteredItems);
+
   return (
     <List>
-      {items.map((item) => {
-        const { id, name, number } = item;
-
-        return (
-          <ContactListItem
-            key={id}
-            id={id}
-            name={name}
-            number={number}
-            onDeleteContact={onDeleteContact}
-          />
-        );
+      {items.map((item, index) => {
+        return <ContactListItem key={item.id} item={item} index={index} />;
       })}
     </List>
   );
 }
 
-const getFilteredItems = (items, filter) => {
-  return items.filter((item) =>
-    item.name.toLowerCase().includes(filter.toLowerCase())
-  );
-};
+// const mapStateToProps = ({ contacts: { items, filter } }) => {
+//   return {
+//     items: getFilteredItems(items, filter),
+//   };
+// };
 
-const mapStateToProps = ({ contacts: { items, filter } }) => {
-  return {
-    items: getFilteredItems(items, filter),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     onDeleteContact: (contactId) => dispatch(actions.deleteContact(contactId)),
+//   };
+// };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onDeleteContact: (contactId) => dispatch(actions.deleteContact(contactId)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+// export default connect(mapStateToProps, mapDispatchToProps)(ContactList);
+// export default ContactList;

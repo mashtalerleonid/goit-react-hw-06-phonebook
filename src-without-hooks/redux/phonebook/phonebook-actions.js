@@ -14,7 +14,7 @@ export const addContact = createAction(
   })
 );
 
-// ---------------------- без toolkit
+// ----------------------
 
 // export const addContact = ({ name, number }) => ({
 //   type: actionTypes.ADD_CONTACT,
